@@ -1,11 +1,21 @@
-
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addTodo, toggleTodo, deleteTodo, fetchTodos, selectTodos, selectTodosStatus } from './store/slices/TodoSlice';
+import {
+    addNewTodo,
+    toggleNewTodo,
+    deleteNewTodo,
+    toggleServerTodo,
+    deleteServerTodo,
+    fetchTodos,
+    selectServerTodos,
+    selectNewTodos,
+    selectTodosStatus
+} from './store/slices/TodoSlice';
 import './App.css';
 
 function App() {
-    const todos = useSelector(selectTodos);
+    const serverTodos = useSelector(selectServerTodos);
+    const newTodos = useSelector(selectNewTodos);
     const status = useSelector(selectTodosStatus);
     const dispatch = useDispatch();
 
@@ -18,17 +28,25 @@ function App() {
         const todoInput = event.target.elements.todoInput;
         const todoText = todoInput.value.trim();
         if (todoText) {
-            dispatch(addTodo({ title: todoText, completed: false })); // Corrected payload structure
+            dispatch(addNewTodo({ title: todoText, completed: false }));
             todoInput.value = '';
         }
     };
 
-    const handleToggleTodo = (todo) => { // Changed parameter to todo object
-        dispatch(toggleTodo(todo));
+    const handleToggleServerTodo = (todo) => {
+        dispatch(toggleServerTodo(todo));
     };
 
-    const handleDeleteTodo = (todo) => { // Changed parameter to todo object
-        dispatch(deleteTodo(todo));
+    const handleDeleteServerTodo = (todo) => {
+        dispatch(deleteServerTodo(todo));
+    };
+
+    const handleToggleNewTodo = (todo) => {
+        dispatch(toggleNewTodo(todo));
+    };
+
+    const handleDeleteNewTodo = (todo) => {
+        dispatch(deleteNewTodo(todo));
     };
 
     if (status === 'loading') {
@@ -42,15 +60,32 @@ function App() {
     return (
         <div className="App">
             <div className="todo-list">
-                {todos.map((todo, index) => (
-                    <div key={index} className="todo-item-container">
+                <h2>Server Todos</h2>
+                {serverTodos.map((todo) => (
+                    <div key={todo.id} className="todo-item-container">
                         <div
-                            className={todo && todo.completed ? "todo-item completed" : "todo-item"}
-                            onClick={() => handleToggleTodo(todo)} // Pass todo object instead of index
+                            className={todo.completed ? "todo-item completed" : "todo-item"}
+                            onClick={() => handleToggleServerTodo(todo)}
                         >
-                            {todo ? todo.title : 'Loading...'} {/* Corrected property name */}
+                            {todo.title}
                         </div>
-                        <button className="delete-button" onClick={() => handleDeleteTodo(todo)}> {/* Pass todo object */}
+                        <button className="delete-button" onClick={() => handleDeleteServerTodo(todo)}>
+                            Delete Todo
+                        </button>
+                    </div>
+                ))}
+            </div>
+            <div className="todo-list">
+                <h2>New Todos</h2>
+                {newTodos.map((todo) => (
+                    <div key={todo.id} className="todo-item-container">
+                        <div
+                            className={todo.completed ? "todo-item completed" : "todo-item"}
+                            onClick={() => handleToggleNewTodo(todo)}
+                        >
+                            {todo.title}
+                        </div>
+                        <button className="delete-button" onClick={() => handleDeleteNewTodo(todo)}>
                             Delete Todo
                         </button>
                     </div>

@@ -17,7 +17,7 @@ const todosSlice = createSlice({
     reducers: {
         addNewTodo: (state, action) => {
             state.newTodos.push({
-                id: Date.now(), // Генерируем уникальный id для новых todo
+                id: Date.now(),
                 title: action.payload.title,
                 completed: action.payload.completed,
             });
